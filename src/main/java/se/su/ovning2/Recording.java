@@ -58,8 +58,4 @@ public class Recording {
     return String.format("{ %s | %s | %s | %d | %s }", artist, title, genre, year, type);
   }
 
-
-
-
-
 }
