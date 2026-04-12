@@ -1,0 +1,5 @@
+UPPDELNING, vi ska göra alla metoder i Searcher.java
+
+VIKTOR: getRecordingByName, getRecordingsAfter, getRecordingsByArtistOrderedByYearAsc
+
+
