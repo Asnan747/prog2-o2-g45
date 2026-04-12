@@ -1,19 +1,42 @@
 package se.su.ovning2;
 
-import java.util.Collection;
-import java.util.SortedSet;
+import java.util.*;
 
 public class Searcher implements SearchOperations {
 
+  //Map som koppålar artistnamn till alla skivor av den artisten.
+  //- Nyckel String: artistens namn.
+  //- Värde Set<Recording>: alla Recording objekt med den artisten.
+  private final Map<String, Set<Recording>> recordingsByArtist = new HashMap<>();
+
+
+  //Konstruktor som tar emot all data och fyller våra datastrukturer.
+  //Bara här vi loopar igenom hela samlingen.
+  //Metoder kan svara snabbt utan loop.
   public Searcher(Collection<Recording> data) {
 
-    Collection<Recording> recordings = data;
+    //Loopa igenom varje skiva från inkommande samling.
+    for (Recording r: data) {
+
+      //Hämta artistnamne från skivan. Blir nyckel i Map
+      String artist = r.getArtist();
+
+      //Finns artisten redan som nyckel i map? Om inte skapa ny tom mängd.
+      if (!recordingsByArtist.containsKey(artist)) {
+        recordingsByArtist.put(artist, new HashSet<>());
+      }
+
+      //Hämta mängden och lägg till i skivan
+      recordingsByArtist.get(artist).add(r);
+    }
+
+    //Collection<Recording> recordings = data; GAMMAL från template
   }
 
   @Override
   public long numberOfArtists() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'numberOfArtists'");
+    return recordingsByArtist.size();
+
   }
 
   @Override
