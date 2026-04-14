@@ -9,6 +9,7 @@ public class Searcher implements SearchOperations {
   //- Värde Set<Recording>: alla Recording objekt med den artisten.
   private final Map<String, Set<Recording>> recordingsByArtist = new HashMap<>();
   private final Map<String, Set<Recording>> genreIndex = new HashMap<>();
+  private final Map<String, TreeMap<Integer, Set<Recording>>> genreYearIndex = new HashMap<>();
 
 
   //Konstruktor som tar emot all data och fyller våra datastrukturer.
@@ -29,12 +30,20 @@ public class Searcher implements SearchOperations {
 
       //Hämta mängden och lägg till i skivan
       recordingsByArtist.get(artist).add(r);
+
       Collection<String> genres = r.getGenre();
+      // hämta året
+      int recordingYear = r.getYear();
       for(String g : genres) {
         if(g!=null && !g.isEmpty()) {
           genreIndex.computeIfAbsent(g , k -> new HashSet<>()).add(r); // kolla om det finns genre finns and lägg till om skivan.
         }
+
+       genreYearIndex.computeIfAbsent(g, k-> new TreeMap<>())
+               .computeIfAbsent(recordingYear, k-> new HashSet<>())
+               .add(r);
       }
+
     }
 
     //Collection<Recording> recordings = data; GAMMAL från template
@@ -115,8 +124,21 @@ public class Searcher implements SearchOperations {
 
   @Override
   public Collection<Recording> getRecordingsByGenreAndYear(String genre, int yearFrom, int yearTo) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getRecordingsByGenreAndYear'");
+   TreeMap<Integer, Set<Recording>> yearMap = genreYearIndex.get(genre);
+
+   if(yearMap == null) {
+     return Collections.emptySet();
+   }
+
+   //check recordings within the given range YearFrom, YearTo
+   NavigableMap<Integer, Set<Recording>> subMap = yearMap.subMap(yearFrom, true, yearTo, true);
+
+   Set<Recording> result = new HashSet<>();
+   for(Set<Recording> yearSet: subMap.values()) {
+     result.addAll(yearSet);
+   }
+
+   return Collections.unmodifiableCollection(result);
   }
 
   @Override
