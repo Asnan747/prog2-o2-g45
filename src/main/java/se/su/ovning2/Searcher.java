@@ -10,6 +10,7 @@ public class Searcher implements SearchOperations {
   private final Map<String, Set<Recording>> recordingsByArtist = new HashMap<>();
   private final Map<String, Set<Recording>> genreIndex = new HashMap<>();
   private final Map<String, TreeMap<Integer, Set<Recording>>> genreYearIndex = new HashMap<>();
+  private final Set<Recording> allRecordings = new HashSet<>();
 
 
   //Konstruktor som tar emot all data och fyller våra datastrukturer.
@@ -22,6 +23,9 @@ public class Searcher implements SearchOperations {
 
       //Hämta artistnamne från skivan. Blir nyckel i Map
       String artist = r.getArtist();
+
+      // lägga till allRecordings
+      allRecordings.add(r);
 
       //Finns artisten redan som nyckel i map? Om inte skapa ny tom mängd.
       if (!recordingsByArtist.containsKey(artist)) {
@@ -143,7 +147,17 @@ public class Searcher implements SearchOperations {
 
   @Override
   public Collection<Recording> offerHasNewRecordings(Collection<Recording> offered) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'offerHasNewRecordings'");
+    Set<Recording> result = new HashSet<>();
+
+    for (Recording offeredRecording : offered) {
+      if (offeredRecording == null) {
+        continue;
+      }
+      if (!allRecordings.contains(offeredRecording)) {
+        result.add(offeredRecording);
+      }
+    }
+
+    return Collections.unmodifiableCollection(result);
   }
 }
