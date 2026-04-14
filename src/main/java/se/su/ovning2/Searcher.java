@@ -8,6 +8,7 @@ public class Searcher implements SearchOperations {
   //- Nyckel String: artistens namn.
   //- Värde Set<Recording>: alla Recording objekt med den artisten.
   private final Map<String, Set<Recording>> recordingsByArtist = new HashMap<>();
+  private final Map<String, Set<Recording>> genreIndex = new HashMap<>();
 
 
   //Konstruktor som tar emot all data och fyller våra datastrukturer.
@@ -28,6 +29,12 @@ public class Searcher implements SearchOperations {
 
       //Hämta mängden och lägg till i skivan
       recordingsByArtist.get(artist).add(r);
+      Collection<String> genres = r.getGenre();
+      for(String g : genres) {
+        if(g!=null && !g.isEmpty()) {
+          genreIndex.computeIfAbsent(g , k -> new HashSet<>()).add(r); // kolla om det finns genre finns and lägg till om skivan.
+        }
+      }
     }
 
     //Collection<Recording> recordings = data; GAMMAL från template
@@ -84,8 +91,12 @@ public class Searcher implements SearchOperations {
 
   @Override
   public Collection<Recording> getRecordingsByGenre(String genre) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getRecordingsByGenre'");
+    Set<Recording> recordings = genreIndex.get(genre);
+    if(recordings == null) {
+      return Collections.emptySet();
+    }
+
+    return Collections.unmodifiableCollection(recordings);
   }
 
   @Override
