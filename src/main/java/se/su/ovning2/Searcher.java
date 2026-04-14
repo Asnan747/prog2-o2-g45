@@ -42,19 +42,33 @@ public class Searcher implements SearchOperations {
   @Override
   public long numberOfGenres() {
     // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'numberOfGenres'");
+    Set<String> genres = new HashSet<>();
+
+    for(Set<Recording> recordings : recordingsByArtist.values()){
+        for(Recording r : recordings){
+            genres.addAll(r.getGenre());
+        }
+    }
+    return genres.size();
   }
 
   @Override
   public long numberOfTitles() {
     // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'numberOfTitles'");
+    Set<String> titles = new HashSet<>();
+
+    for(Set<Recording> recordings : recordingsByArtist.values()){
+        for(Recording r : recordings){
+            titles.add(r.getTitle());
+        }
+    }
+    return titles.size();
   }
 
   @Override
   public boolean doesArtistExist(String name) {
     // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'doesArtistExist'");
+    return recordingsByArtist.containsKey(name);
   }
 
   @Override
