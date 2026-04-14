@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.Objects;
 
-public class Recording {
+public class Recording implements Comparable<Recording> {
   private final int year;
   private final String artist;
   private final String title;
@@ -51,6 +51,17 @@ public class Recording {
   @Override
   public int hashCode() {
     return Objects.hash(title, artist, year);
+  }
+
+  @Override
+  public int compareTo(Recording other) {
+    //Sortera på år
+    int yearCompare = Integer.compare(this.year, other.year);
+    if (yearCompare != 0) {
+      return yearCompare;
+    }
+    //Om samma år sortera på titel istället
+    return this.title.compareTo(other.title);
   }
 
   @Override
