@@ -11,6 +11,8 @@ public class Searcher implements SearchOperations {
   private final Map<String, Set<Recording>> genreIndex = new HashMap<>();
   private final Map<String, TreeMap<Integer, Set<Recording>>> genreYearIndex = new HashMap<>();
   private final Set<Recording> allRecordings = new HashSet<>();
+  private final Map<String, Recording> recordingsByTitle = new HashMap<>();
+  private final TreeMap<Integer, Set<Recording>> recordingsByYear = new TreeMap<>();
 
 
   //Konstruktor som tar emot all data och fyller våra datastrukturer.
@@ -26,6 +28,18 @@ public class Searcher implements SearchOperations {
 
       // lägga till allRecordings
       allRecordings.add(r);
+
+      // lägg till titel-map
+      recordingsByTitle.put(r.getTitle(), r);
+
+      //lägg till år map
+      int year = r.getYear();
+      if (!recordingsByYear.containsKey(year)) {
+        recordingsByYear.put(year, new HashSet<>());
+      }
+
+      recordingsByYear.get(year).add(r);
+
 
       //Finns artisten redan som nyckel i map? Om inte skapa ny tom mängd.
       if (!recordingsByArtist.containsKey(artist)) {
@@ -96,21 +110,33 @@ public class Searcher implements SearchOperations {
 
   @Override
   public Recording getRecordingByName(String title) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getRecordingByName'");
+    return recordingsByTitle.get(title);
+
   }
 
   @Override
   public Collection<Recording> getRecordingsAfter(int year) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getRecordingsAfter'");
+    Map<Integer, Set<Recording>> subMap = recordingsByYear.tailMap(year);
+
+    Set<Recording> result = new HashSet<>();
+
+    for (Set<Recording> yearSet : subMap.values()) {
+      result.addAll(yearSet);
+    }
+    return Collections.unmodifiableCollection(result);
+
   }
 
   @Override
   public SortedSet<Recording> getRecordingsByArtistOrderedByYearAsc(String artist) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException(
-        "Unimplemented method 'getRecordingsByArtistOrderedByYearAsc'");
+    Set<Recording> recordings = recordingsByArtist.get(artist);
+
+    if (recordings == null) {
+      return Collections.emptySortedSet();
+    }
+
+    TreeSet<Recording> sorted = new TreeSet<>(recordings);
+    return Collections.unmodifiableSortedSet(sorted);
   }
 
   @Override
