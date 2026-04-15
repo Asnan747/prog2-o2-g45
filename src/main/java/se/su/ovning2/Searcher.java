@@ -13,6 +13,7 @@ public class Searcher implements SearchOperations {
   private final Set<Recording> allRecordings = new HashSet<>();
   private final Map<String, Recording> recordingsByTitle = new HashMap<>();
   private final TreeMap<Integer, Set<Recording>> recordingsByYear = new TreeMap<>();
+  private final Set<String> allGenres = new HashSet<>();
 
 
   //Konstruktor som tar emot all data och fyller våra datastrukturer.
@@ -54,6 +55,8 @@ public class Searcher implements SearchOperations {
       int recordingYear = r.getYear();
       for(String g : genres) {
         if(g!=null && !g.isEmpty()) {
+          // Lägga till genre
+          allGenres.add(g);
           genreIndex.computeIfAbsent(g , k -> new HashSet<>()).add(r); // kolla om det finns genre finns and lägg till om skivan.
         }
 
@@ -61,6 +64,8 @@ public class Searcher implements SearchOperations {
                .computeIfAbsent(recordingYear, k-> new HashSet<>())
                .add(r);
       }
+
+
 
     }
 
@@ -104,8 +109,7 @@ public class Searcher implements SearchOperations {
 
   @Override
   public Collection<String> getGenres() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getGenres'");
+    return allGenres;
   }
 
   @Override
