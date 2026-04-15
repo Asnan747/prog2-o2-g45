@@ -61,7 +61,6 @@ public class Searcher implements SearchOperations {
 
   @Override
   public long numberOfGenres() {
-    // TODO Auto-generated method stub
     Set<String> genres = new HashSet<>();
 
     for(Set<Recording> recordings : recordingsByArtist.values()){
@@ -74,7 +73,6 @@ public class Searcher implements SearchOperations {
 
   @Override
   public long numberOfTitles() {
-    // TODO Auto-generated method stub
     Set<String> titles = new HashSet<>();
 
     for(Set<Recording> recordings : recordingsByArtist.values()){
@@ -87,7 +85,6 @@ public class Searcher implements SearchOperations {
 
   @Override
   public boolean doesArtistExist(String name) {
-    // TODO Auto-generated method stub
     return recordingsByArtist.containsKey(name);
   }
 
